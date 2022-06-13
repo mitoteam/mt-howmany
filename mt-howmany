@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-echo 'test';
+require __DIR__ . '/../../autoload.php';
 
-exit(0);
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+$application->run();
