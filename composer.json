@@ -1,0 +1,16 @@
+{
+  "name": "mitoteam/mt-howmany",
+  "type": "tool",
+  "description": "Command-line utility to count project sources size, files count, lines count",
+  "homepage": "https://github.com/mitoteam/mt-howmany",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "MiTo Team"
+    }
+  ],
+  "bin": ["mt-howmany"],
+  "require": {
+    "php": ">=7.0"
+  }
+}
