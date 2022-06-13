@@ -13,5 +13,10 @@
   "require": {
     "php": ">=7.0",
     "symfony/console": ">=4.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "MiToTeam\\": "src/"
+    }
   }
 }

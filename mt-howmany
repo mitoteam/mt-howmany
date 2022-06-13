@@ -3,8 +3,13 @@
 
 require __DIR__ . '/../../autoload.php';
 
+use MiToTeam\MtHowManyCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
+$command = new MtHowManyCommand();
+
+$application->add($command);
+$application->setDefaultCommand($command->getName());
 
 $application->run();
