@@ -12,7 +12,8 @@
   "bin": ["mt-howmany"],
   "require": {
     "php": ">=7.0",
-    "symfony/console": ">=4.4"
+    "symfony/console": ">=4.4",
+    "symfony/yaml": ">=4.4"
   },
   "autoload": {
     "psr-4": {

@@ -57,6 +57,8 @@ class MtHowMany
 
   public function Run(SymfonyStyle $io)
   {
+    print_r($this->GetConfig()); exit();
+
     $this->ScanPath($this->getPath());
 
     uasort($this->items_by_type, fn($a, $b) => $b->size - $a->size);
@@ -159,5 +161,25 @@ class MtHowMany
         }
       }
     }
+  }
+
+  private ?MtHowManyConfig $config = null;
+  public const CONFIG_FILE_NAME = 'mt-howmany.yml';
+
+  public function GetConfig(): MtHowManyConfig
+  {
+    if(!$this->config)
+    {
+      $this->config = new MtHowManyConfig();
+
+      $filename = $this->getPath() . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME;
+
+      if(file_exists($filename))
+      {
+        $this->config->Load($filename);
+      }
+    }
+
+    return $this->config;
   }
 }
