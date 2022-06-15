@@ -60,4 +60,6 @@ abstract class MtHowManyBaseItem
   {
     return (int)ceil($this->lines / self::LINES_ON_PAGE);
   }
+
+  abstract public function GetCount(): int;
 }

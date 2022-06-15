@@ -2,75 +2,63 @@
 
 namespace MiToTeam;
 
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MtHowMany
 {
-  private static ?MtHowMany $instance = null;
+  private SymfonyStyle $io;
 
-  /**
-   * Singleton instantiation method.
-   *
-   * @return mixed
-   */
-  public static function gi(): MtHowMany
+  public function __construct(SymfonyStyle $io)
   {
-    if (!self::$instance)
-    {
-      self::$instance = new MtHowMany();
-    }
-
-    return self::$instance;
+    $this->io = $io;
   }
 
-  /**
-   * Protected constructor to prevent creating a new instance of the
-   * *Singleton* via the `new` operator from outside of this class.
-   */
-  protected function __construct()
-  {
-  }
-
-  private string $path = '';
+  private string $working_dir = '';
 
   /**
    * @return string
    */
-  public function getPath(): string
+  public function getWorkingDir(): string
   {
-    if(!$this->path)
+    if(!$this->working_dir)
     {
-      $this->path = getcwd();
+      $this->working_dir = getcwd();
     }
 
-    return $this->path;
+    return $this->working_dir;
   }
 
   /**
-   * @param string $path
+   * @param string $working_dir
    */
-  public function setPath(string $path): void
+  public function setWorkingDir(string $working_dir): void
   {
-    $this->path = $path;
+    $this->working_dir = $working_dir;
   }
 
-  public function Run(SymfonyStyle $io)
+  public function Run()
   {
-    print_r($this->GetConfig()); exit();
+    $this->io->title('mt-howmany by MiTo Team');
 
-    $this->ScanPath($this->getPath());
+    $this->io->writeln('Working directory: ' . $this->getWorkingDir());
+
+    $config = $this->GetConfig();
+
+    foreach ($config->GetPathList() as $path)
+    {
+      $this->ScanPath($this->GetFullPath($path));
+    }
 
     uasort($this->items_by_type, fn($a, $b) => $b->size - $a->size);
 
-    if($io->isVerbose())
+    if($this->io->isVerbose())
     {
       $header = array('File', 'Size', 'Lines');
       $type_totals_item = new MtHowManyTotalsItem();
 
       foreach ($this->items_by_type as $type => $type_item)
       {
-        $io->title('File type: ' . $type);
+        $this->io->title('File type: ' . $type);
 
         $rows = array();
         $type_totals_item->Reset();
@@ -88,34 +76,34 @@ class MtHowMany
           $rows[] = $row;
         }
 
-        $io->table($header, $rows);
+        $this->io->table($header, $rows);
 
-        $io->writeln("'$type' Total Size: " . $type_totals_item->GetSizeFormatted());
-        $io->writeln("'$type' Total Lines: " . $type_totals_item->lines);
+        $this->io->writeln("'$type' Total Size: " . $type_totals_item->GetSizeFormatted());
+        $this->io->writeln("'$type' Total Lines: " . $type_totals_item->lines);
       }
     }
-    else
+
+    $this->io->title('By file type');
+
+    $header = array('Type', 'File Count', 'Size', 'Lines');
+    $rows = array();
+
+    foreach ($this->items_by_type as $type => $type_item)
     {
-      $io->title('By file type');
+      $row = array();
 
-      $header = array('Type', 'Size', 'Lines');
-      $rows = array();
+      $row[] = $type;
+      $row[] = $type_item->GetCount();
+      $row[] = $type_item->GetSizeFormatted();
+      $row[] = $type_item->lines;
 
-      foreach ($this->items_by_type as $type => $type_item)
-      {
-        $row = array();
-
-        $row[] = $type;
-        $row[] = $type_item->GetSizeFormatted();
-        $row[] = $type_item->lines;
-
-        $rows[] = $row;
-      }
-
-      $io->table($header, $rows);
+      $rows[] = $row;
     }
 
-    $io->title('Totals');
+    $this->io->table($header, $rows);
+
+
+    $this->io->title('Totals');
 
     $totals_item = new MtHowManyTotalsItem();
     foreach ($this->items_by_type as $item)
@@ -123,10 +111,14 @@ class MtHowMany
       $totals_item->AggregateItem($item);
     }
 
-    $io->writeln('Size: ' . $totals_item->GetSizeFormatted());
-    $io->writeln('Lines: ' . $totals_item->lines);
-    $io->writeln('Pages by Size: ' . $totals_item->GetPagesCountByCharacters());
-    $io->writeln('Pages by Lines: ' . $totals_item->GetPagesCountByLines());
+    $this->io->writeln('Types count: ' . count($this->items_by_type));
+    $this->io->writeln('Files count: ' . $totals_item->count);
+    $this->io->writeln('Size: ' . $totals_item->GetSizeFormatted());
+    $this->io->writeln('Lines: ' . $totals_item->lines);
+    $this->io->writeln('Pages by Size: ' . $totals_item->GetPagesCountByCharacters());
+    $this->io->writeln('Pages by Lines: ' . $totals_item->GetPagesCountByLines());
+
+    $this->io->success('Done');
   }
 
   /**
@@ -136,6 +128,8 @@ class MtHowMany
 
   private function ScanPath(string $path)
   {
+    $this->io->writeln('Scanning path: ' . $path);
+
     foreach(scandir($path) as $item)
     {
       if($item == '.' || $item == '..')
@@ -156,7 +150,7 @@ class MtHowMany
           $info = pathinfo($full_path);
           $type = $info['extension'] ?? '[no extension]';
 
-          $file_item = new MtHowManyFileItem($full_path);
+          $file_item = new MtHowManyFileItem($full_path, $this->getWorkingDir());
           ($this->items_by_type[$type] ??= new MtHowManyTypeItem())->AddFile($file_item);
         }
       }
@@ -170,16 +164,21 @@ class MtHowMany
   {
     if(!$this->config)
     {
-      $this->config = new MtHowManyConfig();
+      $this->config = new MtHowManyConfig($this->io);
 
-      $filename = $this->getPath() . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME;
+      $filename = $this->GetFullPath(self::CONFIG_FILE_NAME);
 
       if(file_exists($filename))
       {
-        $this->config->Load($filename);
+        $this->config->Load($filename, $this->io);
       }
     }
 
     return $this->config;
+  }
+
+  public function GetFullPath(string $relative_path): string
+  {
+    return $this->getWorkingDir() . DIRECTORY_SEPARATOR . $relative_path;
   }
 }

@@ -13,14 +13,8 @@ class MtHowManyCommand extends Command
 
   protected function execute(InputInterface $input, OutputInterface $output)
   {
-    $io = new SymfonyStyle($input, $output);
-
-    $io->title('mt-howmany by MiTo Team');
-    $io->writeln('Path: ' . MtHowMany::gi()->getPath());
-
-    MtHowMany::gi()->Run($io);
-
-    $io->success('Done');
+    $helper = new MtHowMany(new SymfonyStyle($input, $output));
+    $helper->Run();
 
     return 0;
   }

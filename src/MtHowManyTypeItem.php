@@ -20,4 +20,9 @@ class MtHowManyTypeItem extends MtHowManyBaseItem
   {
     return $this->files;
   }
+
+  public function GetCount(): int
+  {
+    return count($this->files);
+  }
 }

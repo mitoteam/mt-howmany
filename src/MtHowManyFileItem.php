@@ -5,13 +5,16 @@ namespace MiToTeam;
 class MtHowManyFileItem extends MtHowManyBaseItem
 {
   public string $path;
+  public string $full_path;
 
-  public function __construct(string $full_path)
+  public function __construct(string $full_path, string $working_dir)
   {
-    $this->size = filesize($full_path);
-    $this->lines = $this->GetLinesCount($full_path);
+    $this->full_path = $full_path;
 
-    $this->path = str_replace(MtHowMany::gi()->getPath(), '', $full_path);
+    $this->size = filesize($full_path);
+    $this->lines = $this->GetLinesCount();
+
+    $this->path = str_replace($working_dir, '', $full_path);
 
     if(DIRECTORY_SEPARATOR == '\\')
     {
@@ -19,11 +22,11 @@ class MtHowManyFileItem extends MtHowManyBaseItem
     }
   }
 
-  private function GetLinesCount(string $filename): int
+  private function GetLinesCount(): int
   {
     $r = 0;
 
-    $handle = fopen($filename, "r");
+    $handle = fopen($this->full_path, "r");
 
     while(!feof($handle))
     {
@@ -34,5 +37,10 @@ class MtHowManyFileItem extends MtHowManyBaseItem
     fclose($handle);
 
     return $r;
+  }
+
+  public function GetCount(): int
+  {
+    return 1;
   }
 }
