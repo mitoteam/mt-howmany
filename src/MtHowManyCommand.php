@@ -16,9 +16,9 @@ class MtHowManyCommand extends Command
     $io = new SymfonyStyle($input, $output);
 
     $io->title('mt-howmany by MiTo Team');
-    $io->note('Path: ' . MtHowMany::gi()->getPath());
+    $io->writeln('Path: ' . MtHowMany::gi()->getPath());
 
-    MtHowMany::gi()->Run($output);
+    MtHowMany::gi()->Run($io);
 
     $io->success('Done');
 

@@ -15,4 +15,9 @@ class MtHowManyTypeItem extends MtHowManyBaseItem
     $this->lines += $file->lines;
     $this->size += $file->size;
   }
+
+  public function GetFilesList(): array
+  {
+    return $this->files;
+  }
 }
