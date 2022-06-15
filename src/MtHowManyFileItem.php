@@ -7,19 +7,13 @@ class MtHowManyFileItem extends MtHowManyBaseItem
   public string $path;
   public string $full_path;
 
-  public function __construct(string $full_path, string $working_dir)
+  public function __construct(string $full_path, string $relative_path)
   {
     $this->full_path = $full_path;
+    $this->path = $relative_path;
 
     $this->size = filesize($full_path);
     $this->lines = $this->GetLinesCount();
-
-    $this->path = str_replace($working_dir, '', $full_path);
-
-    if(DIRECTORY_SEPARATOR == '\\')
-    {
-      $this->path = str_replace('\\', '/', $this->path);
-    }
   }
 
   private function GetLinesCount(): int

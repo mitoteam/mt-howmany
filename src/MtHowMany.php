@@ -53,6 +53,68 @@ class MtHowMany
 
     uasort($this->items_by_type, fn($a, $b) => $b->size - $a->size);
 
+    $this->PrintResults();
+
+    $this->io->success('Done');
+  }
+
+  /**
+   * @var MtHowManyTypeItem[]
+   */
+  private array $items_by_type = array(); // extension => MtHowManyTypeItem
+
+  private function ScanPath(string $path)
+  {
+    $config = $this->GetConfig();
+
+    foreach(scandir($path) as $base_name)
+    {
+      if($base_name == '.' || $base_name == '..')
+      {
+        continue;
+      }
+
+      //ignore by name
+      foreach ($config->GetIgnoreNameList() as $regexp)
+      {
+        if(preg_match('/' . $regexp . '/u', $base_name))
+        {
+          continue 2;
+        }
+      }
+
+      $full_path = $this->GetFullPath($base_name, $path);
+      $relative_path = $this->GetRelativePath($full_path);
+
+      //ignore by path
+      foreach ($config->GetIgnorePathList() as $regexp)
+      {
+        if(preg_match('/' . $regexp . '/u', $relative_path))
+        {
+          continue 2;
+        }
+      }
+
+      if(is_dir($full_path))
+      {
+        $this->ScanPath($full_path);
+      }
+      else
+      {
+        if(file_exists($full_path))
+        {
+          $info = pathinfo($full_path);
+          $type = $info['extension'] ?? '[no extension]';
+
+          $file_item = new MtHowManyFileItem($full_path, $relative_path);
+          ($this->items_by_type[$type] ??= new MtHowManyTypeItem())->AddFile($file_item);
+        }
+      }
+    }
+  }
+
+  private function PrintResults()
+  {
     if($this->io->isVerbose())
     {
       $header = array('File', 'Size', 'Lines');
@@ -87,7 +149,7 @@ class MtHowMany
 
     $this->io->title('By file type');
 
-    $header = array('Type', 'File Count', 'Size', 'Lines');
+    $header = array('Type', 'Size', 'File Count', 'Lines');
     $rows = array();
 
     foreach ($this->items_by_type as $type => $type_item)
@@ -95,8 +157,8 @@ class MtHowMany
       $row = array();
 
       $row[] = $type;
-      $row[] = $type_item->GetCount();
       $row[] = $type_item->GetSizeFormatted();
+      $row[] = $type_item->GetCount();
       $row[] = $type_item->lines;
 
       $rows[] = $row;
@@ -119,48 +181,12 @@ class MtHowMany
     $this->io->writeln('Lines: ' . $totals_item->lines);
     $this->io->writeln('Pages by Size: ' . $totals_item->GetPagesCountByCharacters());
     $this->io->writeln('Pages by Lines: ' . $totals_item->GetPagesCountByLines());
-
-    $this->io->success('Done');
-  }
-
-  /**
-   * @var MtHowManyTypeItem[]
-   */
-  private array $items_by_type = array(); // extension => MtHowManyTypeItem
-
-  private function ScanPath(string $path)
-  {
-    foreach(scandir($path) as $item)
-    {
-      if($item == '.' || $item == '..')
-      {
-        continue;
-      }
-
-      $full_path = $path . DIRECTORY_SEPARATOR . $item;
-
-      if(is_dir($full_path))
-      {
-        $this->ScanPath($full_path);
-      }
-      else
-      {
-        if(file_exists($full_path))
-        {
-          $info = pathinfo($full_path);
-          $type = $info['extension'] ?? '[no extension]';
-
-          $file_item = new MtHowManyFileItem($full_path, $this->getWorkingDir());
-          ($this->items_by_type[$type] ??= new MtHowManyTypeItem())->AddFile($file_item);
-        }
-      }
-    }
   }
 
   private ?MtHowManyConfig $config = null;
   public const CONFIG_FILE_NAME = 'mt-howmany.yml';
 
-  public function GetConfig(): MtHowManyConfig
+  private function GetConfig(): MtHowManyConfig
   {
     if(!$this->config)
     {
@@ -177,8 +203,28 @@ class MtHowMany
     return $this->config;
   }
 
-  public function GetFullPath(string $relative_path): string
+  public function GetFullPath(string $relative_path, ?string $base_path = null): string
   {
-    return $this->getWorkingDir() . DIRECTORY_SEPARATOR . $relative_path;
+    if(DIRECTORY_SEPARATOR == '\\')
+    {
+      $relative_path = str_replace('/', '\\', $relative_path);
+    }
+
+    return ($base_path ?: $this->getWorkingDir()) . DIRECTORY_SEPARATOR . $relative_path;
+  }
+
+  public function GetRelativePath(string $full_path): string
+  {
+    $relative_path = str_replace($this->getWorkingDir(), '', $full_path);
+
+    if(DIRECTORY_SEPARATOR == '\\')
+    {
+      $relative_path = str_replace('\\', '/', $relative_path);
+    }
+
+    //cut first directory separator
+    $relative_path = substr($relative_path, 1);
+
+    return $relative_path;
   }
 }

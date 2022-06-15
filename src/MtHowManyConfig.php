@@ -40,16 +40,38 @@ class MtHowManyConfig
 
   public function GetPathList(): array
   {
-    if(!isset($this->config['path']))
+    $value = $this->_GetArray('path');
+
+    if(!count($value))
     {
       $this->io->writeln('No paths set in config, using working dir as default path');
       $this->config['path'] = array('');
     }
-    elseif(!is_array($this->config['path']))
+
+    return $value;
+  }
+
+  public function GetIgnoreNameList(): array
+  {
+    return $this->_GetArray('ignore_name');
+  }
+
+  public function GetIgnorePathList(): array
+  {
+    return $this->_GetArray('ignore_path');
+  }
+
+  private function _GetArray(string $key): array
+  {
+    if(!isset($this->config[$key]))
     {
-      $this->config['path'] = array($this->config['path']);
+      $this->config[$key] = array();
+    }
+    elseif(!is_array($this->config[$key]))
+    {
+      $this->config[$key] = array($this->config[$key]);
     }
 
-    return $this->config['path'];
+    return $this->config[$key];
   }
 }
