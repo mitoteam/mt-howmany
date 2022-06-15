@@ -46,7 +46,9 @@ class MtHowMany
 
     foreach ($config->GetPathList() as $path)
     {
-      $this->ScanPath($this->GetFullPath($path));
+      $full_path = $this->GetFullPath($path);
+      $this->io->writeln('Scanning path: ' . $full_path);
+      $this->ScanPath($full_path);
     }
 
     uasort($this->items_by_type, fn($a, $b) => $b->size - $a->size);
@@ -128,8 +130,6 @@ class MtHowMany
 
   private function ScanPath(string $path)
   {
-    $this->io->writeln('Scanning path: ' . $path);
-
     foreach(scandir($path) as $item)
     {
       if($item == '.' || $item == '..')
@@ -141,7 +141,7 @@ class MtHowMany
 
       if(is_dir($full_path))
       {
-
+        $this->ScanPath($full_path);
       }
       else
       {
