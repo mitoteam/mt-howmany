@@ -13,6 +13,7 @@
   "require": {
     "php": ">=7.0",
     "symfony/console": ">=4.4",
+    "symfony/string": ">=5.4",
     "symfony/yaml": ">=4.4"
   },
   "autoload": {

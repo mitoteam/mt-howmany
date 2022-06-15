@@ -144,7 +144,7 @@ class MtHowMany
   {
     if($this->io->isVerbose())
     {
-      $header = array('File', 'Size', 'Lines');
+      $header = array('File', 'Size', 'Characters', 'Lines');
       $type_totals_item = new MtHowManyTotalsItem();
 
       foreach ($this->items_by_type as $type => $type_item)
@@ -165,6 +165,7 @@ class MtHowMany
 
           $row[] = $file_item->path;
           $row[] = $file_item->GetSizeFormatted();
+          $row[] = $file_item->characters;
           $row[] = $file_item->lines;
 
           $type_totals_item->AggregateItem($file_item);
@@ -175,6 +176,7 @@ class MtHowMany
         $this->io->table($header, $rows);
 
         $this->io->writeln("'$type' Total Size: " . $type_totals_item->GetSizeFormatted());
+        $this->io->writeln("'$type' Total Characters: " . $type_totals_item->characters);
         $this->io->writeln("'$type' Total Lines: " . $type_totals_item->lines);
       }
     }
@@ -182,7 +184,7 @@ class MtHowMany
     #region By file type
     $this->io->title('By file type');
 
-    $header = array('Type', 'Size', 'Files Count', 'Lines');
+    $header = array('Type', 'Size', 'Characters', 'Files Count', 'Lines');
     $rows = array();
 
     foreach ($this->items_by_type as $type => $type_item)
@@ -191,6 +193,7 @@ class MtHowMany
 
       $row[] = $type;
       $row[] = $type_item->GetSizeFormatted();
+      $row[] = $type_item->characters;
       $row[] = $type_item->GetCount();
       $row[] = $type_item->lines;
 
@@ -203,7 +206,7 @@ class MtHowMany
     #region By path
     $this->io->title('By path');
 
-    $header = array('Path', 'Size', 'Files Count', 'Lines');
+    $header = array('Path', 'Size', 'Characters', 'Files Count', 'Lines');
     $rows = array();
 
     foreach ($this->items_by_path as $path => $path_item)
@@ -218,6 +221,7 @@ class MtHowMany
 
       $row[] = $path;
       $row[] = $path_item->GetSizeFormatted();
+      $row[] = $path_item->characters;
       $row[] = $path_item->GetCount();
       $row[] = $path_item->lines;
 
@@ -237,10 +241,12 @@ class MtHowMany
     }
 
     $this->io->writeln('Types count: ' . count($this->items_by_type));
+    $this->io->writeln('Paths count: ' . count($this->items_by_path));
     $this->io->writeln('Files count: ' . $totals_item->count);
     $this->io->writeln('Size: ' . $totals_item->GetSizeFormatted());
+    $this->io->writeln('Characters: ' . $totals_item->characters);
     $this->io->writeln('Lines: ' . $totals_item->lines);
-    $this->io->writeln('Pages by Size: ' . $totals_item->GetPagesCountByCharacters());
+    $this->io->writeln('Pages by Characters: ' . $totals_item->GetPagesCountByCharacters());
     $this->io->writeln('Pages by Lines: ' . $totals_item->GetPagesCountByLines());
     #endregion
   }

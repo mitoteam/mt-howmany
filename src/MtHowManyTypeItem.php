@@ -12,8 +12,10 @@ class MtHowManyTypeItem extends MtHowManyBaseItem
   public function AddFile(MtHowManyFileItem $file)
   {
     $this->files[] = $file;
+
     $this->lines += $file->lines;
     $this->size += $file->size;
+    $this->characters += $file->characters;
   }
 
   public function GetFilesList(): array

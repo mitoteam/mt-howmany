@@ -2,6 +2,8 @@
 
 namespace MiToTeam;
 
+use Symfony\Component\String\UnicodeString;
+
 class MtHowManyFileItem extends MtHowManyBaseItem
 {
   public string $path;
@@ -14,6 +16,7 @@ class MtHowManyFileItem extends MtHowManyBaseItem
 
     $this->size = filesize($full_path);
     $this->lines = $this->GetLinesCount();
+    $this->characters = $this->GetCharactersCount();
   }
 
   private function GetLinesCount(): int
@@ -29,6 +32,27 @@ class MtHowManyFileItem extends MtHowManyBaseItem
     }
 
     fclose($handle);
+
+    return $r;
+  }
+
+  private function GetCharactersCount(): int
+  {
+    $r = 0;
+
+    try
+    {
+      if($text = file_get_contents($this->full_path))
+      {
+        $text = new UnicodeString($text);
+
+        $r = $text->length();
+      }
+    }
+    catch (Symfony\Component\String\Exception\InvalidArgumentException)
+    {
+      //can not read file as utf-8 string
+    }
 
     return $r;
   }

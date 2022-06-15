@@ -16,10 +16,11 @@ class MtHowManyTotalsItem extends MtHowManyBaseItem
     $this->count += $item->GetCount();
     $this->lines += $item->lines;
     $this->size += $item->size;
+    $this->characters += $item->characters;
   }
 
   public function Reset()
   {
-    $this->count = $this->lines = $this->size = 0;
+    $this->count = $this->lines = $this->size = $this->characters = 0;
   }
 }

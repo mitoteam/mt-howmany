@@ -8,6 +8,7 @@ abstract class MtHowManyBaseItem
   public const CHARACTERS_ON_PAGE = 3600;
 
   public int $size = 0;
+  public int $characters = 0;
   public int $lines = 0;
 
   public function GetSizeFormatted(): string
@@ -53,7 +54,7 @@ abstract class MtHowManyBaseItem
 
   public function GetPagesCountByCharacters(): int
   {
-    return (int)ceil($this->size / self::CHARACTERS_ON_PAGE);
+    return (int)ceil($this->characters / self::CHARACTERS_ON_PAGE);
   }
 
   public function GetPagesCountByLines(): int
