@@ -52,6 +52,7 @@ class MtHowMany
     }
 
     uasort($this->items_by_type, fn($a, $b) => $b->size - $a->size);
+    ksort($this->items_by_path);
 
     $this->PrintResults();
 
@@ -63,53 +64,79 @@ class MtHowMany
    */
   private array $items_by_type = array(); // extension => MtHowManyTypeItem
 
-  private function ScanPath(string $path)
+  /**
+   * @var MtHowManyTotalsItem[]
+   */
+  private array $items_by_path = array(); // extension => MtHowManyTotalsItem
+
+  private function ScanPath(string $path, ?MtHowManyTotalsItem $path_item = null)
   {
     $config = $this->GetConfig();
 
-    foreach(scandir($path) as $base_name)
+    if(is_dir($path))
     {
-      if($base_name == '.' || $base_name == '..')
+      foreach (scandir($path) as $base_name)
       {
-        continue;
-      }
-
-      //ignore by name
-      foreach ($config->GetIgnoreNameList() as $regexp)
-      {
-        if(preg_match('/' . $regexp . '/u', $base_name))
+        if($base_name == '.' || $base_name == '..')
         {
-          continue 2;
+          continue;
+        }
+
+        //ignore by name
+        foreach ($config->GetIgnoreNameList() as $regexp)
+        {
+          if(preg_match('/' . $regexp . '/u', $base_name))
+          {
+            continue 2;
+          }
+        }
+
+        $full_path = $this->GetFullPath($base_name, $path);
+        $relative_path = $this->GetRelativePath($full_path);
+
+        //ignore by path
+        foreach ($config->GetIgnorePathList() as $regexp)
+        {
+          if(preg_match('/' . $regexp . '/u', $relative_path))
+          {
+            continue 2;
+          }
+        }
+
+        if(is_dir($full_path))
+        {
+          $child_path_item = new MtHowManyTotalsItem();
+
+          //recursion
+          $this->ScanPath($full_path, $child_path_item);
+
+          $this->items_by_path[$relative_path] = $child_path_item;
+
+          $path_item?->AggregateItem($child_path_item);
+        }
+        else
+        {
+          $this->ProcessFile($full_path, $relative_path, $path_item);
         }
       }
+    }
+    else //seems that upper level path is a file
+    {
+      $this->ProcessFile($path, $this->GetRelativePath($path));
+    }
+  }
 
-      $full_path = $this->GetFullPath($base_name, $path);
-      $relative_path = $this->GetRelativePath($full_path);
+  private function ProcessFile(string $full_path, string $relative_path, ?MtHowManyTotalsItem $path_item = null)
+  {
+    if(file_exists($full_path))
+    {
+      $info = pathinfo($full_path);
+      $type = $info['extension'] ?? '[no extension]';
 
-      //ignore by path
-      foreach ($config->GetIgnorePathList() as $regexp)
-      {
-        if(preg_match('/' . $regexp . '/u', $relative_path))
-        {
-          continue 2;
-        }
-      }
+      $file_item = new MtHowManyFileItem($full_path, $relative_path);
+      ($this->items_by_type[$type] ??= new MtHowManyTypeItem())->AddFile($file_item);
 
-      if(is_dir($full_path))
-      {
-        $this->ScanPath($full_path);
-      }
-      else
-      {
-        if(file_exists($full_path))
-        {
-          $info = pathinfo($full_path);
-          $type = $info['extension'] ?? '[no extension]';
-
-          $file_item = new MtHowManyFileItem($full_path, $relative_path);
-          ($this->items_by_type[$type] ??= new MtHowManyTypeItem())->AddFile($file_item);
-        }
-      }
+      $path_item?->AggregateItem($file_item);
     }
   }
 
@@ -127,7 +154,12 @@ class MtHowMany
         $rows = array();
         $type_totals_item->Reset();
 
-        foreach ($type_item->GetFilesList() as $file_item)
+        $file_items_list = $type_item->GetFilesList();
+
+        //sort by size
+        usort($file_items_list, fn($a, $b) => $b->size - $a->size);
+
+        foreach ($file_items_list as $file_item)
         {
           $row = array();
 
@@ -147,9 +179,10 @@ class MtHowMany
       }
     }
 
+    #region By file type
     $this->io->title('By file type');
 
-    $header = array('Type', 'Size', 'File Count', 'Lines');
+    $header = array('Type', 'Size', 'Files Count', 'Lines');
     $rows = array();
 
     foreach ($this->items_by_type as $type => $type_item)
@@ -165,8 +198,36 @@ class MtHowMany
     }
 
     $this->io->table($header, $rows);
+    #endregion
 
+    #region By path
+    $this->io->title('By path');
 
+    $header = array('Path', 'Size', 'Files Count', 'Lines');
+    $rows = array();
+
+    foreach ($this->items_by_path as $path => $path_item)
+    {
+      //skip empty folders
+      if(!$path_item->GetCount())
+      {
+        continue;
+      }
+
+      $row = array();
+
+      $row[] = $path;
+      $row[] = $path_item->GetSizeFormatted();
+      $row[] = $path_item->GetCount();
+      $row[] = $path_item->lines;
+
+      $rows[] = $row;
+    }
+
+    $this->io->table($header, $rows);
+    #endregion
+
+    #region Totals
     $this->io->title('Totals');
 
     $totals_item = new MtHowManyTotalsItem();
@@ -181,6 +242,7 @@ class MtHowMany
     $this->io->writeln('Lines: ' . $totals_item->lines);
     $this->io->writeln('Pages by Size: ' . $totals_item->GetPagesCountByCharacters());
     $this->io->writeln('Pages by Lines: ' . $totals_item->GetPagesCountByLines());
+    #endregion
   }
 
   private ?MtHowManyConfig $config = null;
