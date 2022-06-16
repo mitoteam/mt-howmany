@@ -110,7 +110,7 @@ class MtHowMany
 
         if(is_dir($full_path))
         {
-          $child_path_item = new MtHowManyTotalsItem();
+          $child_path_item = new MtHowManyTotalsItem($this);
 
           //recursion
           $this->ScanPath($full_path, $child_path_item);
@@ -121,25 +121,25 @@ class MtHowMany
         }
         else
         {
-          $this->ProcessFile($full_path, $relative_path, $path_item);
+          $this->ProcessFile($full_path, $path_item);
         }
       }
     }
     else //seems that upper level path is a file
     {
-      $this->ProcessFile($path, $this->GetRelativePath($path));
+      $this->ProcessFile($path);
     }
   }
 
-  private function ProcessFile(string $full_path, string $relative_path, ?MtHowManyTotalsItem $path_item = null)
+  private function ProcessFile(string $full_path, ?MtHowManyTotalsItem $path_item = null)
   {
     if(file_exists($full_path))
     {
       $info = pathinfo($full_path);
       $type = $info['extension'] ?? '[no extension]';
 
-      $file_item = new MtHowManyFileItem($full_path, $relative_path);
-      ($this->items_by_type[$type] ??= new MtHowManyTypeItem())->AddFile($file_item);
+      $file_item = new MtHowManyFileItem($full_path, $this);
+      ($this->items_by_type[$type] ??= new MtHowManyTypeItem($this))->AddFile($file_item);
 
       $path_item?->AggregateItem($file_item);
     }
@@ -151,7 +151,7 @@ class MtHowMany
     if($this->io->isVeryVerbose())
     {
       $header = array('File', 'Size', 'Characters', 'Lines');
-      $type_totals_item = new MtHowManyTotalsItem();
+      $type_totals_item = new MtHowManyTotalsItem($this);
 
       foreach ($this->items_by_type as $type => $type_item)
       {
@@ -244,7 +244,7 @@ class MtHowMany
     #region Totals
     $this->io->title('Totals');
 
-    $totals_item = new MtHowManyTotalsItem();
+    $totals_item = new MtHowManyTotalsItem($this);
     foreach ($this->items_by_type as $item)
     {
       $totals_item->AggregateItem($item);
@@ -264,7 +264,7 @@ class MtHowMany
   private ?MtHowManyConfig $config = null;
   public const CONFIG_FILE_NAME = 'mt-howmany.yml';
 
-  private function GetConfig(): MtHowManyConfig
+  public function GetConfig(): MtHowManyConfig
   {
     if(!$this->config)
     {

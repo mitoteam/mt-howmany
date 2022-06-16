@@ -9,10 +9,12 @@ class MtHowManyFileItem extends MtHowManyBaseItem
   public string $path;
   public string $full_path;
 
-  public function __construct(string $full_path, string $relative_path)
+  public function __construct(string $full_path, MtHowMany $app)
   {
+    parent::__construct($app);
+
     $this->full_path = $full_path;
-    $this->path = $relative_path;
+    $this->path = $app->GetRelativePath($full_path);
 
     $this->size = filesize($full_path);
     $this->lines = $this->GetLinesCount();

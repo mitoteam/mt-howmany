@@ -4,6 +4,13 @@ namespace MiToTeam;
 
 abstract class MtHowManyBaseItem
 {
+  protected MtHowMany $app;
+
+  public function __construct(MtHowMany $app)
+  {
+    $this->app = $app;
+  }
+
   public const LINES_ON_PAGE = 40;
   public const CHARACTERS_ON_PAGE = 3600;
 
@@ -54,12 +61,12 @@ abstract class MtHowManyBaseItem
 
   public function GetPagesCountByCharacters(): int
   {
-    return (int)ceil($this->characters / self::CHARACTERS_ON_PAGE);
+    return (int)ceil($this->characters / $this->app->GetConfig()->GetCharactersPerPage());
   }
 
   public function GetPagesCountByLines(): int
   {
-    return (int)ceil($this->lines / self::LINES_ON_PAGE);
+    return (int)ceil($this->lines / $this->app->GetConfig()->GetLinesPerPage());
   }
 
   abstract public function GetCount(): int;

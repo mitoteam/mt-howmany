@@ -41,6 +41,9 @@ class MtHowManyConfig
         {
           $this->io->writeln("Ignored paths:\n  " . implode("\n  ", $list));
         }
+
+        $this->io->writeln("Lines per page: " . $this->GetLinesPerPage());
+        $this->io->writeln("Characters per page: " . $this->GetCharactersPerPage());
       }
     }
     catch (ParseException $e)
@@ -74,6 +77,16 @@ class MtHowManyConfig
     return $this->_GetArray('ignore_path');
   }
 
+  public function GetLinesPerPage(): int
+  {
+    return $this->_GetInt('lines_per_page', 36);
+  }
+
+  public function GetCharactersPerPage(): int
+  {
+    return $this->_GetInt('characters_per_page', 3600);
+  }
+
   private function _GetArray(string $key): array
   {
     if(!isset($this->config[$key]))
@@ -83,6 +96,20 @@ class MtHowManyConfig
     elseif(!is_array($this->config[$key]))
     {
       $this->config[$key] = array($this->config[$key]);
+    }
+
+    return $this->config[$key];
+  }
+
+  private function _GetInt(string $key, int $default): int
+  {
+    if(!isset($this->config[$key]))
+    {
+      $this->config[$key] = $default;
+    }
+    elseif(!is_integer($this->config[$key]))
+    {
+      $this->config[$key] = (int)($this->config[$key]);
     }
 
     return $this->config[$key];
