@@ -142,7 +142,8 @@ class MtHowMany
 
   private function PrintResults()
   {
-    if($this->io->isVerbose())
+    #region Each file
+    if($this->io->isVeryVerbose())
     {
       $header = array('File', 'Size', 'Characters', 'Lines');
       $type_totals_item = new MtHowManyTotalsItem();
@@ -180,6 +181,38 @@ class MtHowMany
         $this->io->writeln("'$type' Total Lines: " . $type_totals_item->lines);
       }
     }
+    #endregion
+
+    #region By path
+    if($this->io->isVerbose())
+    {
+      $this->io->title('By path');
+
+      $header = array('Path', 'Size', 'Characters', 'Files Count', 'Lines');
+      $rows = array();
+
+      foreach ($this->items_by_path as $path => $path_item)
+      {
+        //skip empty folders
+        if(!$path_item->GetCount())
+        {
+          continue;
+        }
+
+        $row = array();
+
+        $row[] = $path;
+        $row[] = $path_item->GetSizeFormatted();
+        $row[] = $path_item->characters;
+        $row[] = $path_item->GetCount();
+        $row[] = $path_item->lines;
+
+        $rows[] = $row;
+      }
+
+      $this->io->table($header, $rows);
+    }
+    #endregion
 
     #region By file type
     $this->io->title('By file type');
@@ -196,34 +229,6 @@ class MtHowMany
       $row[] = $type_item->characters;
       $row[] = $type_item->GetCount();
       $row[] = $type_item->lines;
-
-      $rows[] = $row;
-    }
-
-    $this->io->table($header, $rows);
-    #endregion
-
-    #region By path
-    $this->io->title('By path');
-
-    $header = array('Path', 'Size', 'Characters', 'Files Count', 'Lines');
-    $rows = array();
-
-    foreach ($this->items_by_path as $path => $path_item)
-    {
-      //skip empty folders
-      if(!$path_item->GetCount())
-      {
-        continue;
-      }
-
-      $row = array();
-
-      $row[] = $path;
-      $row[] = $path_item->GetSizeFormatted();
-      $row[] = $path_item->characters;
-      $row[] = $path_item->GetCount();
-      $row[] = $path_item->lines;
 
       $rows[] = $row;
     }
