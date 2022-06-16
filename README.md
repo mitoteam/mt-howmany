@@ -4,6 +4,8 @@
 [![Packagist Version](https://img.shields.io/packagist/v/mitoteam/mt-howmany?include_prereleases&style=flat-square&logo=packagist)](https://packagist.org/packages/mitoteam/mt-howmany)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/mitoteam/mt-howmany?style=flat-square&logo=php)](https://github.com/mitoteam/mt-howmany)
 
+<img src="https://github.com/mitoteam/mt-howmany/blob/main/graphics/logo.png" height="64" />
+
 Command-line utility to measure project sources size, files count, lines count, characters count. You can exclude vendor libraries, binary files, generated code and so from scanning.
 
 Our goal was to understand how many code was written by our own hands for different projects.
