@@ -37,7 +37,7 @@ class MtHowMany
     $this->working_dir = $working_dir;
   }
 
-  public function Run()
+  public function Run(): int
   {
     $this->io->title('mt-howmany by MiTo Team');
 
@@ -61,7 +61,7 @@ class MtHowMany
 
     $this->PrintResults();
 
-    $this->io->success('Done');
+    return count($this->errors) ? -1 : 0;
   }
 
   /**
@@ -73,6 +73,21 @@ class MtHowMany
    * @var MtHowManyTotalsItem[]
    */
   private array $items_by_path = array(); // extension => MtHowManyTotalsItem
+
+  /**
+   * @var string[]
+   */
+  private array $errors = array();
+
+  public function AddError(string $message)
+  {
+    $this->errors[] = $message;
+
+    if($this->io->isVeryVerbose())
+    {
+      $this->io->error($message);
+    }
+  }
 
   private function ScanPath(string $path, ?MtHowManyTotalsItem $path_item = null)
   {
@@ -133,6 +148,11 @@ class MtHowMany
 
   private function ProcessFile(string $full_path, ?MtHowManyTotalsItem $path_item = null)
   {
+    if($this->io->isDebug())
+    {
+      print("Processing file: $full_path\n");
+    }
+
     if(file_exists($full_path))
     {
       $info = pathinfo($full_path);
@@ -259,6 +279,30 @@ class MtHowMany
     $this->io->writeln('Pages by Characters: ' . $totals_item->GetPagesCountByCharacters());
     $this->io->writeln('Pages by Lines: ' . $totals_item->GetPagesCountByLines());
     #endregion
+
+    #region Errors
+    if($cnt = count($this->errors))
+    {
+      if(!$this->io->isVerbose())
+      {
+        $this->io->error("Errors occured while processing files: $cnt. You can add -v argument to see full errors list.");
+      }
+      else
+      {
+        $this->io->error("Errors occured while processing files:");
+
+        foreach ($this->errors as $msg)
+        {
+          $this->io->writeln('  * ' . $msg);
+        }
+      }
+    }
+    #endregion
+  }
+
+  public function GetIO(): SymfonyStyle
+  {
+    return $this->io;
   }
 
   private ?MtHowManyConfig $config = null;

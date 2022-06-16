@@ -51,9 +51,9 @@ class MtHowManyFileItem extends MtHowManyBaseItem
         $r = $text->length();
       }
     }
-    catch (Symfony\Component\String\Exception\InvalidArgumentException)
+    catch (\Throwable $e)
     {
-      //can not read file as utf-8 string
+      $this->app->AddError('File: ' . $this->path .  '  Message: ' . $e->getMessage());
     }
 
     return $r;

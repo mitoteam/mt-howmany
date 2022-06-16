@@ -14,8 +14,7 @@ class MtHowManyCommand extends Command
   protected function execute(InputInterface $input, OutputInterface $output)
   {
     $helper = new MtHowMany(new SymfonyStyle($input, $output));
-    $helper->Run();
 
-    return 0;
+    return $helper->Run();
   }
 }
