@@ -93,9 +93,6 @@ Characters: 923226
 Lines: 37844
 Pages by Characters: 257
 Pages by Lines: 1052
-
-
- [OK] Done
 ```
 
 **MiTo Team**: info@mito-team.com, https://www.mito-team.com
