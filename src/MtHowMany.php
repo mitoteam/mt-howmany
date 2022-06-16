@@ -3,6 +3,7 @@
 namespace MiToTeam;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class MtHowMany
 {
@@ -44,12 +45,16 @@ class MtHowMany
 
     $config = $this->GetConfig();
 
+    $this->io->writeln("\nStarting scan.\n", OutputInterface::VERBOSITY_VERBOSE);
+
     foreach ($config->GetPathList() as $path)
     {
       $full_path = $this->GetFullPath($path);
-      $this->io->writeln('Scanning path: ' . $full_path);
+      $this->io->writeln('Scanning path: ' . $full_path, OutputInterface::VERBOSITY_VERBOSE);
       $this->ScanPath($full_path);
     }
+
+    $this->io->writeln("\nScan finished. Printing results.", OutputInterface::VERBOSITY_VERBOSE);
 
     uasort($this->items_by_type, fn($a, $b) => $b->size - $a->size);
     ksort($this->items_by_path);
@@ -186,7 +191,7 @@ class MtHowMany
     #region By path
     if($this->io->isVerbose())
     {
-      $this->io->title('By path');
+      $this->io->title('Results by path');
 
       $header = array('Path', 'Size', 'Characters', 'Files Count', 'Lines');
       $rows = array();
@@ -215,7 +220,7 @@ class MtHowMany
     #endregion
 
     #region By file type
-    $this->io->title('By file type');
+    $this->io->title('Results by file extension');
 
     $header = array('Type', 'Size', 'Characters', 'Files Count', 'Lines');
     $rows = array();
@@ -269,7 +274,7 @@ class MtHowMany
 
       if(file_exists($filename))
       {
-        $this->config->Load($filename, $this->io);
+        $this->config->Load($filename);
       }
     }
 

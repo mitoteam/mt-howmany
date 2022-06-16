@@ -27,7 +27,20 @@ class MtHowManyConfig
 
       if($this->io->isVeryVerbose())
       {
-        print_r($this->config);
+        $this->io->writeln('Full config dump:');
+        $this->io->writeln(print_r($this->config, true));
+      }
+      elseif($this->io->isVerbose())
+      {
+        if(count($list = $this->GetIgnoreNameList()))
+        {
+          $this->io->writeln("Ignored names:\n  " . implode("\n  ", $list));
+        }
+
+        if(count($list = $this->GetIgnorePathList()))
+        {
+          $this->io->writeln("Ignored paths:\n  " . implode("\n  ", $list));
+        }
       }
     }
     catch (ParseException $e)
