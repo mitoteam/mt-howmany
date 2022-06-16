@@ -9,6 +9,16 @@
 #  - web/modules/custom/binardo
 #
 
+# You can include other configs with 'import' option. Values applied in included order.
+# Values in current config have preference. List values are being merged.
+# Paths are relative to working directory.
+#import: some/path/some_another_config.yml
+# or
+#import:
+#  - common_config.yml
+#  - some/path/some_another_config.yml
+
+
 # One ore more regular expressions to ignore files and folders by name during scanning.
 ignore_name:
   # extensions only
@@ -18,14 +28,17 @@ ignore_name:
   # full names
   - '^(vendor)$'
 
+
 # One ore more regular expressions to ignore files and folders by relative path during scanning.
 ignore_path:
   - 'binardo\/somecustomfolder\/somesubfolder'
   - 'mtlaptheme\/fontawesome$'
   - 'binardotheme\/(css|config)$'
 
+
 # Number of lines to consider to fit at one page when showing pages count. Default is 36 lines at one page.
 lines_per_page: 36
+
 
 # Number of characters to consider to fit at one page when showing pages count. Default is 3600 characters at one page.
 characters_per_page: 3600

@@ -312,13 +312,14 @@ class MtHowMany
   {
     if(!$this->config)
     {
-      $this->config = new MtHowManyConfig($this->io);
+      $this->config = new MtHowManyConfig($this);
 
       $filename = $this->GetFullPath(self::CONFIG_FILE_NAME);
 
       if(file_exists($filename))
       {
         $this->config->Load($filename);
+        $this->config->PrintConfigInfo();
       }
     }
 
