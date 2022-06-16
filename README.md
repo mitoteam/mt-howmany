@@ -8,7 +8,7 @@
 
 Command-line utility to measure project sources size, files count, lines count, characters count. You can exclude vendor libraries, binary files, generated code and so from scanning.
 
-Our goal was to understand how many code was written by our own hands for different projects.
+Our goal was to understand how many code characters, lines and pages were written by our own hands for various projects.
 
 ## Installation
 
