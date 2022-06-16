@@ -26,15 +26,24 @@ Tool installs standard composer binary to vendor/bin/mt-howmany. So you can run 
 vendor/bin/mt-howmany
 ```
 
-Windows:
+or under Windows:
 ```
 vendor\bin\mt-howmany.bat
 ```
 
-
 It looks for config in current directory. By default it scans currenct directory recursively, but you can set specific paths to scan in config. There are also banch of options in config.
 
 Take a look at sample config for details: [mt-howmany.example.yml](mt-howmany.example.yml)
+
+For each file that is not ignored in config tool calculates lines count, file size and characters count (using `symphony/string` to deal with Unicode and multi-byte characters).
+
+After scanning it prints table with gathered data and final total numbers for whole project. 
+
+You can add `-v` or `-vv` arguments to increase output verbosity.
+
+`-v` add per-path statistics table (helps to understand what to exclude from scanning to left only code that is trully yours).
+
+`-vv` additionally prints complete data for each file to understand even better where numbers are taken from. 
 
 Notes, bugreports, proposals and pull requests are always welcomed.
 
