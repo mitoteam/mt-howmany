@@ -97,4 +97,5 @@ Pages by Characters: 257
 Pages by Lines: 1052
 ```
 
-**MiTo Team**: info@mito-team.com, https://www.mito-team.com
+* Project Page: https://www.mito-team.com/projects/mt-howmany
+* Contacts: info@mito-team.com, https://www.mito-team.com
