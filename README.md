@@ -31,7 +31,9 @@ or under Windows:
 vendor\bin\mt-howmany.bat
 ```
 
-It looks for config in current directory. By default it scans currenct directory recursively, but you can set specific paths to scan in config. There are also banch of options in config.
+It looks for config in current directory. By default it scans currenct directory recursively, but you can set specific paths to scan in config. There are also bunch of options in config.
+
+You can import config from other files with `import` option (for example to have some common parts between projects).
 
 Take a look at sample config for details: [mt-howmany.example.yml](mt-howmany.example.yml)
 
