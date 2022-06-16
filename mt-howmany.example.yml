@@ -1,0 +1,31 @@
+# This is an example config for mt-howmany. Copy it to mt-howmany.yml in directory where you running mt-howmany from.
+# Then edit options or remove them to use defaults.
+
+# One ore more paths relative to working dir to scan files. Working directory itself is used by default if nothing set.
+#path: src/Controller
+# or
+#path:
+#  - src/classes
+#  - web/modules/custom/binardo
+#
+
+# One ore more regular expressions to ignore files and folders by name during scanning.
+ignore_name:
+  # extensions only
+  - '\.(ttf|png|woff2|pack|pdf|mp3|psd|kra|xlsx|docx|lock|svg|ico|min\.js)$'
+  # dot-files and dot-folders
+  - '^\.(keep|git|svn|idea)$'
+  # full names
+  - '^(vendor)$'
+
+# One ore more regular expressions to ignore files and folders by relative path during scanning.
+ignore_path:
+  - 'binardo\/somecustomfolder\/somesubfolder'
+  - 'mtlaptheme\/fontawesome$'
+  - 'binardotheme\/(css|config)$'
+
+# Number of lines to consider to fit at one page when showing pages count. Default is 36 lines at one page.
+lines_per_page: 36
+
+# Number of characters to consider to fit at one page when showing pages count. Default is 3600 characters at one page.
+characters_per_page: 3600
