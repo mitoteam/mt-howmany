@@ -57,8 +57,9 @@ Notes, bugreports, proposals and pull requests are always welcomed.
 mt-howmany by MiTo Team
 =======================
 
-Working directory: D:\Work\MiSHuTka\Projects\Web\binardo
-Config file loaded: D:\Work\MiSHuTka\Projects\Web\binardo\mt-howmany.yml
+Working directory: /www/binardo.mt.test
+Config file loaded: /www/binardo.mt.test/web/modules/custom/mtlapbase/mt-howmany.common.yml
+Config file loaded: /www/binardo.mt.test/mt-howmany.yml
 
 Results by file extension
 =========================
@@ -67,32 +68,30 @@ Results by file extension
   Type        Size     Characters   Files Count   Lines
  ----------- -------- ------------ ------------- -------
   php         777Kb    782756       174           32225
-  twig        51.1Kb   51145        26            1471
-  scss        30.4Kb   30464        47            1886
+  twig        50.0Kb   51145        26            1471
+  scss        29.8Kb   30464        47            1886
   js          17.1Kb   17276        11            637
-  yml         14.9Kb   15157        17            597
+  yml         15.5Kb   15767        18            621
   sh          9.59Kb   9816         11            348
   po          3.69Kb   2965         1             164
-  json        3.29Kb   3346         4             127
+  json        3.27Kb   3344         4             127
   module      3.10Kb   3176         2             131
   theme       3.06Kb   3133         2             123
-  gitignore   2.25Kb   2280         2             82
+  gitignore   2.23Kb   2280         2             82
   md          2.08Kb   1323         6             38
-  css         213      212          1             2
   txt         139      139          1             8
   htaccess    38       38           2             4
-  empty       0        0            1             1
  ----------- -------- ------------ ------------- -------
 
 Totals
 ======
 
-Types count: 16
-Paths count: 69
-Files count: 308
-Size: 918Kb
-Characters: 923226
-Lines: 37844
+Types count: 14
+Paths count: 67
+Files count: 307
+Size: 916Kb
+Characters: 923622
+Lines: 37865
 Pages by Characters: 257
 Pages by Lines: 1052
 ```
