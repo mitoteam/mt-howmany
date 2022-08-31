@@ -6,7 +6,7 @@ require __DIR__ . '/../../autoload.php';
 use MiToTeam\MtHowManyCommand;
 use Symfony\Component\Console\Application;
 
-$application = new Application();
+$application = new Application('mt-howmany', '1.1');
 $command = new MtHowManyCommand();
 
 $application->add($command);
