@@ -211,15 +211,15 @@ class MtHowMany
       switch ($this->single)
       {
         case 'CHARS':
-          $this->io->write($totals_item->characters);
+          $this->io->writeln($totals_item->characters);
           break;
 
         case 'LINES':
-          $this->io->write($totals_item->lines);
+          $this->io->writeln($totals_item->lines);
           break;
 
         case 'PAGES':
-          $this->io->write($totals_item->GetPagesCountByLines());
+          $this->io->writeln($totals_item->GetPagesCountByLines());
           break;
       }
     }
