@@ -19,7 +19,7 @@ class MtHowManyConfig
     $this->io = $app->GetIO();
   }
 
-  public function Load(string $full_file_path)
+  public function Load(string $full_file_path, bool $silent = false)
   {
     $this->config = array();
 
@@ -41,7 +41,7 @@ class MtHowManyConfig
       {
         $imported_config = new MtHowManyConfig($this->app);
 
-        $imported_config->Load($this->app->GetFullPath($import_path));
+        $imported_config->Load($this->app->GetFullPath($import_path), $silent);
 
         //merge known list keys
         foreach ($list_keys_to_merge as $key)
@@ -69,7 +69,10 @@ class MtHowManyConfig
       }
     }
 
-    $this->io->writeln('Config file loaded: ' . $full_file_path);
+    if(!$silent)
+    {
+      $this->io->writeln('Config file loaded: ' . $full_file_path);
+    }
   }
 
   public function PrintConfigInfo()

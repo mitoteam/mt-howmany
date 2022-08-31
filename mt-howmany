@@ -3,10 +3,11 @@
 
 require __DIR__ . '/../../autoload.php';
 
+use MiToTeam\MtHowMany;
 use MiToTeam\MtHowManyCommand;
 use Symfony\Component\Console\Application;
 
-$application = new Application('mt-howmany', '1.1');
+$application = new Application(MtHowMany::APP_NAME, MtHowMany::APP_VERSION);
 $command = new MtHowManyCommand();
 
 $application->add($command);
