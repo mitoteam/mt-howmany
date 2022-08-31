@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MtHowMany
 {
   public const APP_NAME = 'mt-howmany';
-  public const APP_VERSION = '1.1';
+  public const APP_VERSION = '1.2';
 
   private InputInterface $input;
   private OutputInterface $output;
