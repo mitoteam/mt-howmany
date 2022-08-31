@@ -49,6 +49,8 @@ You can add `-v` or `-vv` arguments to increase output verbosity.
 
 `-vv` additionally prints complete data for each file to understand even better where numbers are taken from. 
 
+`--single` option turns on 'single value mode'. Program will print just one value without any other output (if there are no errors). This is useful for CI, automation and so on. Possible option values: 'CHARS', 'LINES', 'PAGES'. Example: `mt-howmany --single=LINES`
+
 Notes, bugreports, proposals and pull requests are always welcomed.
 
 ## Output Example
