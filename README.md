@@ -3,6 +3,8 @@
 [![GitHub Version](https://img.shields.io/github/v/release/mitoteam/mt-howmany?style=flat-square&logo=github)](https://github.com/mitoteam/mt-howmany)
 [![Packagist Version](https://img.shields.io/packagist/v/mitoteam/mt-howmany?include_prereleases&style=flat-square&logo=packagist)](https://packagist.org/packages/mitoteam/mt-howmany)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/mitoteam/mt-howmany?style=flat-square&logo=php)](https://github.com/mitoteam/mt-howmany)
+[![Packagist Total Downloads](https://img.shields.io/packagist/dt/mitoteam/mt-howmany?style=flat-square)](https://packagist.org/packages/mitoteam/mt-howmany/stats)
+[![Packagist Monthly Downloads](https://img.shields.io/packagist/dm/mitoteam/mt-howmany?style=flat-square)](https://packagist.org/packages/mitoteam/mt-howmany/stats)
 
 <img src="https://github.com/mitoteam/mt-howmany/blob/main/graphics/logo.png" height="64" />
 
