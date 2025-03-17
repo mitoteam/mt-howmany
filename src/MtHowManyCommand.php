@@ -16,7 +16,7 @@ class MtHowManyCommand extends Command
 
   protected static $defaultName = 'run';
 
-  protected function configure()
+  protected function configure(): void
   {
     $version = MtHowMany::APP_VERSION;
 
@@ -36,7 +36,8 @@ TXT)
           . implode(', ', self::$SINGLE_OPTION_POSSIBLE_VALUES)
       );
   }
-  protected function execute(InputInterface $input, OutputInterface $output)
+  
+  protected function execute(InputInterface $input, OutputInterface $output): int
   {
     return (new MtHowMany($input, $output))->Run();
   }
