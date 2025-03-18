@@ -21,6 +21,7 @@ class MtHowManyCommand extends Command
     $version = MtHowMany::APP_VERSION;
 
     $this
+      ->setName('run')
       ->setDescription(<<<TXT
 Calculates project's files, lines and characters number.
 See https://www.mito-team.com/projects/mt-howmany for details.
